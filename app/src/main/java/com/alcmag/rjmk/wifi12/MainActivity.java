@@ -1,14 +1,18 @@
 package com.alcmag.rjmk.wifi12;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +33,7 @@ public class MainActivity extends ListActivity {
     ListView list;
     String[] wifis;
 
+
     EditText pass;
 
 
@@ -42,9 +47,10 @@ public class MainActivity extends ListActivity {
         wifiReciever = new WifiScanReceiver();
         mainWifiObj.startScan();
         mainWifiObj = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        assert mainWifiObj != null;
         mainWifiObj.setWifiEnabled(true);
 
-// Get List of Available Wifi Networs
+// Get List of Available Wifi Networks
 
 
 
@@ -69,11 +75,19 @@ public class MainActivity extends ListActivity {
     }
 
     protected void onResume() {
+        super.onResume();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 87);
+            }
+        }
         registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         super.onResume();
     }
     class WifiScanReceiver extends BroadcastReceiver {
-
+        @SuppressLint("UseValueOf")
         public void onReceive(Context c, Intent intent) {
             List<ScanResult> wifiScanList = mainWifiObj.getScanResults();
             wifis = new String[wifiScanList.size()];
@@ -91,7 +105,7 @@ public class MainActivity extends ListActivity {
                 counter++;
 
             }
-            list.setAdapter(new ArrayAdapter<String>(getApplicationContext(),R.layout.list_item,R.id.label, filtered));
+            list.setAdapter(new ArrayAdapter<>(getApplicationContext(),R.layout.list_item,R.id.label, filtered));
 
 
         }

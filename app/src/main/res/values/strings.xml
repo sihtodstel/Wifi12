@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Wifi1.2</string>
     <string name="connect">Connect</string>
+    <string name="hint">Password</string>
 </resources>

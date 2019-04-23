@@ -20,8 +20,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textSSID1"
         android:layout_marginTop="5dp"
-        android:autofillHints=""
-        android:inputType="" />
+        android:autofillHints="@string/hint"
+        android:hint="@string/hint"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/okButton"
